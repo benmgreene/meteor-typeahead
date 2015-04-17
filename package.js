@@ -1,5 +1,5 @@
 Package.describe({
-	name: "benmgreene:typeahead",
+	name: "sergeyt:typeahead",
 	summary: "Autocomplete package for meteor powered by twitter typeahead.js",
 	git: "https://github.com/sergeyt/meteor-typeahead.git",
 	version: "0.10.5_14"
