@@ -1,4 +1,4 @@
-# meteor-typeahead [![Build Status](https://drone.io/github.com/sergeyt/meteor-typeahead/status.png)](https://drone.io/github.com/sergeyt/meteor-typeahead/latest) [![LICENSE](http://img.shields.io/badge/LICENSE-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT) [![meteor package version](http://img.shields.io/badge/atmosphere-0.10.5_13-brightgreen.svg)](https://atmospherejs.com/sergeyt/typeahead)
+# meteor-typeahead [![Build Status](https://drone.io/github.com/sergeyt/meteor-typeahead/status.png)](https://drone.io/github.com/sergeyt/meteor-typeahead/latest) [![LICENSE](http://img.shields.io/badge/LICENSE-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT) [![meteor package version](http://img.shields.io/badge/atmosphere-0.10.5_14-brightgreen.svg)](https://atmospherejs.com/sergeyt/typeahead)
 
 [![Deps Status](https://david-dm.org/sergeyt/meteor-typeahead.png)](https://david-dm.org/sergeyt/meteor-typeahead)
 [![DevDeps Status](https://david-dm.org/sergeyt/meteor-typeahead/dev-status.png)](https://david-dm.org/sergeyt/meteor-typeahead#info=devDependencies)
@@ -97,6 +97,9 @@ if (Meteor.isServer){
 if (Meteor.isClient){
   Template.demo.helpers({
     repos: function() {
+      // this only works if returned objects have
+      // an attribute named "value" containing the text
+      // See docs for "data-value-key" attribute
       return Repos.find().fetch();
     }
   });
