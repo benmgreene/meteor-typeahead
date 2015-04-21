@@ -129,10 +129,14 @@ function init_typeahead(index, element) {
  * Destroys all typeahead elements.
  * @param selector (optional) selector to find typeahead elements to be activated
  */
-Meteor.typeahead.destroy = function(selector, ignore_template_instance_context = false) {
+Meteor.typeahead.destroy = function(selector, ignore_template_instance_context) {
 	if (!selector) {
 		selector = '.typeahead';
 	}
+	if (ignore_template_instance_context == null) {
+		ignore_template_instance_context = false;
+	}
+
 
 	// See if we have a template instance to reference
 	var template = Template.instance();
@@ -147,10 +151,8 @@ Meteor.typeahead.destroy = function(selector, ignore_template_instance_context =
 
 function destroy_typeahead(index, element) {
 	try {
-		console.log($(element));
 		if ($(element).data('ttTypeahead')) {
 			if ($(element).data('computation')) {
-				console.log("stopping computation...");
 				$(element).data('computation').stop();
 			}
 			$(element).typeahead('destroy');
@@ -417,15 +419,9 @@ function make_bloodhound(dataset) {
 			var tracker = Template.instance() || Tracker;
 			dataset.computation = tracker.autorun(function() {
 				if(!dataset.computation || !dataset.computation.stopped) {
-					console.log("dataset.computation", !!dataset.computation);
-					if(dataset.computation)
-						console.log("dataset.computation.stopped", dataset.computation.stopped);
 					engine = new Bloodhound(options);
 					engine.initialize();					
 				}
-			});
-			dataset.computation.onInvalidate(function() {
-				console.log("dataset.computation.onInvalidate", Template.instance())
 			});
 		}
 	}
