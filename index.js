@@ -58,6 +58,7 @@ Meteor.typeahead = function(element, source) {
 			};
 		}
 
+		$e.data('computation', dataset.computation);
 		instance = $e.typeahead(options, dataset);
 	}
 
@@ -89,6 +90,7 @@ Meteor.typeahead = function(element, source) {
 		});
 	}
 
+
 	return instance;
 };
 
@@ -116,6 +118,42 @@ function init_typeahead(index, element) {
 	try {
 		if (!$(element).data('ttTypeahead')) {
 			Meteor.typeahead(element);
+		}
+	} catch (err) {
+		console.log(err);
+		return;
+	}
+}
+
+/**
+ * Destroys all typeahead elements.
+ * @param selector (optional) selector to find typeahead elements to be activated
+ */
+Meteor.typeahead.destroy = function(selector) {
+	if (!selector) {
+		selector = '.typeahead';
+	}
+
+	// See if we have a template instance to reference
+	var template = Template.instance();
+	if (!template) {
+		// If we don't, just destroy on the entire DOM
+		$(selector).each(destroy_typeahead);
+	} else {
+		// Otherwise just destroy this template's typeaheads
+		template.$(selector).each(destroy_typeahead);
+	}
+};
+
+function destroy_typeahead(index, element) {
+	try {
+		console.log($(element));
+		if ($(element).data('ttTypeahead')) {
+			if ($(element).data('computation')) {
+				console.log("stopping computation...");
+				$(element).data('computation').stop();
+			}
+			$(element).typeahead('destroy');
 		}
 	} catch (err) {
 		console.log(err);
@@ -377,9 +415,17 @@ function make_bloodhound(dataset) {
 			// update data source on changing deps of local function
 			// TODO find better (functional) way to do that
 			var tracker = Template.instance() || Tracker;
-			tracker.autorun(function() {
-				engine = new Bloodhound(options);
-				engine.initialize();
+			dataset.computation = tracker.autorun(function() {
+				if(!dataset.computation || !dataset.computation.stopped) {
+					console.log("dataset.computation", !!dataset.computation);
+					if(dataset.computation)
+						console.log("dataset.computation.stopped", dataset.computation.stopped);
+					engine = new Bloodhound(options);
+					engine.initialize();					
+				}
+			});
+			dataset.computation.onInvalidate(function() {
+				console.log("dataset.computation.onInvalidate", Template.instance())
 			});
 		}
 	}
