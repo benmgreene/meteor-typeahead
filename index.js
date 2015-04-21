@@ -129,14 +129,14 @@ function init_typeahead(index, element) {
  * Destroys all typeahead elements.
  * @param selector (optional) selector to find typeahead elements to be activated
  */
-Meteor.typeahead.destroy = function(selector) {
+Meteor.typeahead.destroy = function(selector, ignore_template_instance_context = false) {
 	if (!selector) {
 		selector = '.typeahead';
 	}
 
 	// See if we have a template instance to reference
 	var template = Template.instance();
-	if (!template) {
+	if (ignore_template_instance_context || !template) {
 		// If we don't, just destroy on the entire DOM
 		$(selector).each(destroy_typeahead);
 	} else {
